@@ -1,0 +1,26 @@
+package API
+
+const LOGIN string = "/login"
+const BASE_UPLOAD string = "/base/up"
+const IMAGE_LIST string = "/image/list"
+const IMAGE_DEL string = "/image/del"
+const IMAGE_PULL string = "/image/pull"
+const IMAGE_INFO string = "/image/info/:id"
+const IMAGE_EXPORT string = "/image/export"
+const IMAGE_IMPORT string = "/image/import"
+const IMAGE_SEARCH string = "/image/search"
+const BASE_INDEX string = "/base/index"
+const BASE_STATIC string = "/base/static"
+const BASE_RESOURCE string = "/base/resusing"
+const LOG_TOP5 string = "/log/top5"
+const CON_LIST = "/con/list"
+const CON_DEL = "/con/del"
+const CON_INFO = "/con/info/:id"
+
+// repo
+const REPO_LIST = "/repo/list"
+const REPO_DEL = "/repo/del"
+const REPO_CREATE = "/repo/create"
+const REPO_INFO = "/repo/info"
+const REPO_UPDATE = "/repo/update"
+const REPO_DOWN = "/repo/down"

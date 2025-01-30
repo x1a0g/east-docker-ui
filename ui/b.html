@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="status">准备就绪</div>
+  <div id="progress"></div>
+
+  <script>
+    const eventSource = new EventSource('/image/import?name=alpine&fileId=a361b1e5-c57a-41f4-b003-4bd564f94937&version=hwx1.0.1');
+
+    eventSource.addEventListener('message', (e) => {
+        console.log(e)
+      try {
+        const data = JSON.parse(e.data);
+        document.getElementById('progress').innerHTML += `
+          <div>${data.status || ''} ${data.progress || ''}</div>
+        `;
+      } catch(err) {
+        console.error('解析错误:', err);
+      }
+    });
+
+    eventSource.addEventListener('error', (e) => {
+        console.log(e)
+        document.getElementById('status').textContent = '错误: ' + e.data;
+      eventSource.close();
+    });
+
+    eventSource.addEventListener('complete', () => {
+      document.getElementById('status').textContent = '镜像拉取完成!';
+      eventSource.close();
+    });
+  </script>
+</body>
+</html>

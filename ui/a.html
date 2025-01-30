@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="status">准备就绪</div>
+  <div id="progress"></div>
+
+  <script>
+    const params = new URLSearchParams({
+        name: 'alpine',
+        repoId: '460145f6-5073-49fa-b336-88097210842d',
+        version: 'latest'
+    });
+
+    const eventSource = new EventSource('/image/pull?name=alpine&repoId=460145f6-5073-49fa-b336-88097210842d&version=latest');
+
+    eventSource.addEventListener('message', (e) => {
+        console.log(e)
+      try {
+        const data = JSON.parse(e.data);
+        document.getElementById('progress').innerHTML += `
+          <div>${data.status || ''} ${data.progress || ''}</div>
+        `;
+      } catch(err) {
+        console.error('解析错误:', err);
+      }
+    });
+
+    eventSource.addEventListener('error', (e) => {
+        console.log(e)
+        document.getElementById('status').textContent = '错误: ' + e.data;
+      eventSource.close();
+    });
+
+    eventSource.addEventListener('complete', () => {
+      document.getElementById('status').textContent = '镜像拉取完成!';
+      eventSource.close();
+    });
+  </script>
+</body>
+</html>
