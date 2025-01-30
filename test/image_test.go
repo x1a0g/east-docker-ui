@@ -51,7 +51,7 @@ func TestBaseMcRepo(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-
+	client.LoadImage(docker.LoadImageOptions{})
 	ex, err := client.SearchImagesEx("docker.1ms.run/library/redis", docker.AuthConfiguration{})
 	if err != nil {
 		panic(err)

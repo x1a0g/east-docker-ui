@@ -16,6 +16,7 @@ import (
 	"strings"
 )
 
+// 镜像列表
 func ListDockerImage(ctx *gin.Context) {
 	var req dto.SearchImageDto
 
@@ -324,6 +325,11 @@ func SearchImages(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+// tag image
+// push image
+// create a image from con
+
+// dockerfile构建
 type sseWriter struct {
 	ctx *gin.Context
 }
