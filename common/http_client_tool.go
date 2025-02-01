@@ -16,6 +16,7 @@ const LOG_TOP5 string = "/log/top5"
 const CON_LIST = "/con/list"
 const CON_DEL = "/con/del"
 const CON_INFO = "/con/info/:id"
+const CON_CREATE = "/con/create"
 
 // repo
 const REPO_LIST = "/repo/list"
