@@ -14,3 +14,8 @@ type StaticCount struct {
 	ContainersStopped int `json:"ContainersStopped"`
 	ContainersPaused  int `json:"ContainersPaused"`
 }
+
+type StaticCountChat struct {
+	Type  string `json:"type"`
+	Count int    `json:"count"`
+}

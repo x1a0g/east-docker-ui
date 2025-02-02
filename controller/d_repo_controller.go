@@ -131,7 +131,8 @@ func DownList(ctx *gin.Context) {
 	var res []vo.RepoDownVo
 	for _, repo := range list {
 		res = append(res, vo.RepoDownVo{
-			Id: repo.Id,
+			Id:       repo.Id,
+			RepoName: repo.RepoName,
 		})
 	}
 	var resp API.ApiResponseObject

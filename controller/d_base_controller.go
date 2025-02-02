@@ -36,7 +36,9 @@ func IndexBaseInfo(ctx *gin.Context) {
 	res.HostName = info.Name
 
 	//utils.PrintDockerInfo(info)
-	ctx.JSON(http.StatusOK, res)
+	var resp API.ApiResponseObject
+	resp.Success4data(res)
+	ctx.JSON(http.StatusOK, resp)
 
 }
 
@@ -68,14 +70,29 @@ func StaticCount(ctx *gin.Context) {
 		return
 	}
 
-	var res vo.StaticCount
-	res.TotalContainers = info.Containers
-	res.ContainersRunning = info.ContainersRunning
-	res.ContainersPaused = info.ContainersPaused
-	res.ContainersStopped = info.ContainersStopped
+	//var res vo.StaticCount
+	//res.TotalContainers = info.Containers
+	//res.ContainersRunning = info.ContainersRunning
+	//res.ContainersPaused = info.ContainersPaused
+	//res.ContainersStopped = info.ContainersStopped
 
+	var res []vo.StaticCountChat
+	res = append(res, vo.StaticCountChat{
+		Count: info.ContainersRunning,
+		Type:  "运行中的容器",
+	})
+	res = append(res, vo.StaticCountChat{
+		Count: info.ContainersPaused,
+		Type:  "暂停的容器",
+	})
+	res = append(res, vo.StaticCountChat{
+		Count: info.ContainersStopped,
+		Type:  "停止的容器",
+	})
 	//utils.PrintDockerInfo(info)
-	ctx.JSON(http.StatusOK, res)
+	var resp API.ApiResponseObject
+	resp.Success4data(res)
+	ctx.JSON(http.StatusOK, resp)
 
 }
 

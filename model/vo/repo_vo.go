@@ -8,5 +8,6 @@ type RepoListVo struct {
 }
 
 type RepoDownVo struct {
-	Id string `json:"id"`
+	Id       string `json:"id"`
+	RepoName string `json:"repoName"`
 }

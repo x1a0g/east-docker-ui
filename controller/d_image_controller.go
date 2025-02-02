@@ -56,7 +56,9 @@ func ListDockerImage(ctx *gin.Context) {
 		res = append(res, image)
 	}
 
-	ctx.JSON(http.StatusOK, res)
+	var resp API.ApiResponseObject
+	resp.Success4data(res)
+	ctx.JSON(http.StatusOK, resp)
 
 }
 
@@ -141,6 +143,12 @@ func DeleteImages(ctx *gin.Context) {
 		return
 	}
 
+	if len(req.Ids) == 0 {
+		var resp API.ApiResponseObject
+		resp.Fail(API.ERROR_PARAM.GetCode(), API.ERROR_PARAM.GetName())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
 	_, _, client := getDockerClient(ctx)
 	var res []string
 	for _, id := range req.Ids {
@@ -152,7 +160,7 @@ func DeleteImages(ctx *gin.Context) {
 
 	if len(res) > 0 {
 		var resp API.ApiResponseObject
-		resp.Fail(API.FAIL.GetCode(), fmt.Sprintf("部分镜像ID有误:%s", res))
+		resp.Fail(API.FAIL.GetCode(), fmt.Sprintf("部分镜像被引用或不存在无法删除"))
 		ctx.JSON(http.StatusOK, resp)
 		return
 	}
