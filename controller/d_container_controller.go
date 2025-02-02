@@ -4,11 +4,9 @@ import (
 	API "east-docker-ui/common"
 	"east-docker-ui/model/dto"
 	"errors"
-	"fmt"
 	docker "github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -216,15 +214,132 @@ func ContainerCreate(ctx *gin.Context) {
 		containerOpts.NetworkingConfig = &networkOpts
 	}
 
-	//4、构建容器
+	//4、构建容器=====================================>
 	container, err := client.CreateContainer(containerOpts)
 	switch {
 	case errors.Is(err, docker.ErrContainerAlreadyExists):
-		log.Fatal("容器名称冲突: 请更换名称或删除旧容器")
+		var resp API.ApiResponseObject
+		resp.Fail(API.FAIL.GetCode(), err.Error())
+		ctx.JSON(http.StatusOK, resp)
+		return
 	case err != nil:
-		log.Fatalf("容器创建失败: %v", err)
+		var resp API.ApiResponseObject
+		resp.Fail(API.FAIL.GetCode(), err.Error())
+		ctx.JSON(http.StatusOK, resp)
+		return
 	default:
-		fmt.Printf("容器创建成功 ID: %s\n", container.ID)
+		var resp API.ApiResponseObject
+		resp.Success4data(container.ID)
+		ctx.JSON(http.StatusOK, resp)
+		return
 	}
 
 }
+
+// 开始容器
+func ContainerStart(ctx *gin.Context) {
+
+	cid := ctx.Query("id")
+
+	if cid == "" {
+		var resp API.ApiResponseObject
+		resp.Fail(API.ERROR_PARAM.GetCode(), API.ERROR_PARAM.GetName())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+
+	_, _, client := getDockerClient(ctx)
+	err := client.StartContainer(cid, nil)
+	if err != nil {
+		var resp API.ApiResponseObject
+		resp.Fail(API.FAIL.GetCode(), err.Error())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+	var resp API.ApiResponseObject
+	resp.Success4data(nil)
+	ctx.JSON(http.StatusOK, resp)
+}
+
+// 停止容器
+func ContainerStop(ctx *gin.Context) {
+
+	cid := ctx.Query("id")
+
+	if cid == "" {
+		var resp API.ApiResponseObject
+		resp.Fail(API.ERROR_PARAM.GetCode(), API.ERROR_PARAM.GetName())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+
+	_, _, client := getDockerClient(ctx)
+	err := client.StopContainer(cid, 10)
+	if err != nil {
+		var resp API.ApiResponseObject
+		resp.Fail(API.FAIL.GetCode(), err.Error())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+	var resp API.ApiResponseObject
+	resp.Success4data(nil)
+	ctx.JSON(http.StatusOK, resp)
+}
+
+// 重启容器
+func ContainerReStart(ctx *gin.Context) {
+
+	cid := ctx.Query("id")
+
+	if cid == "" {
+		var resp API.ApiResponseObject
+		resp.Fail(API.ERROR_PARAM.GetCode(), API.ERROR_PARAM.GetName())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+
+	_, _, client := getDockerClient(ctx)
+	err := client.RestartContainer(cid, 10)
+	if err != nil {
+		var resp API.ApiResponseObject
+		resp.Fail(API.FAIL.GetCode(), err.Error())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+	var resp API.ApiResponseObject
+	resp.Success4data(nil)
+	ctx.JSON(http.StatusOK, resp)
+}
+
+// 暂停
+func ContainerPauseOrUnpause(ctx *gin.Context) {
+
+	cid := ctx.Query("id")
+	status := ctx.Query("status")
+
+	if cid == "" || status == "" {
+		var resp API.ApiResponseObject
+		resp.Fail(API.ERROR_PARAM.GetCode(), API.ERROR_PARAM.GetName())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+
+	_, _, client := getDockerClient(ctx)
+	var err error
+	if status == "pause" {
+		err = client.PauseContainer(cid)
+	} else {
+		err = client.UnpauseContainer(cid)
+	}
+	if err != nil {
+		var resp API.ApiResponseObject
+		resp.Fail(API.FAIL.GetCode(), err.Error())
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+	var resp API.ApiResponseObject
+	resp.Success4data(nil)
+	ctx.JSON(http.StatusOK, resp)
+}
+
+//取消暂停

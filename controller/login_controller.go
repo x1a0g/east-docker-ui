@@ -34,6 +34,9 @@ func UserLogin(ctx *gin.Context) {
 	var res vo.LoginVo
 	res.Userinfo = &user
 	res.Token = uuid.New().String()
-	ctx.JSON(http.StatusOK, res)
+
+	var resp API.ApiResponseObject
+	resp.Success4data(res)
+	ctx.JSON(http.StatusOK, resp)
 
 }
