@@ -266,7 +266,7 @@ func ExportImages(ctx *gin.Context) {
 	} else {
 		fileName = image.ID
 	}
-	ctx.Header("Content-Disposition", "attachment; filename="+fileName)
+	ctx.Header("Content-Disposition", "attachment; filename="+fileName+".tar")
 
 	writer := ctx.Writer
 	opts := docker.ExportImageOptions{

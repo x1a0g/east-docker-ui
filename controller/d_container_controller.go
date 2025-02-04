@@ -20,7 +20,7 @@ func ContainerList(ctx *gin.Context) {
 
 	_, _, client := getDockerClient(ctx)
 
-	containers, err := client.ListContainers(docker.ListContainersOptions{All: false})
+	containers, err := client.ListContainers(docker.ListContainersOptions{All: true})
 	if err != nil {
 		var resp API.ApiResponseObject
 		resp.Fail(API.FAIL.GetCode(), API.FAIL.GetName())
@@ -80,7 +80,7 @@ func ContainerDel(ctx *gin.Context) {
 
 	var res []string
 	for _, id := range ids.Ids {
-		err := client.RemoveImage(id)
+		err := client.RemoveContainer(docker.RemoveContainerOptions{ID: id})
 		if err != nil {
 			res = append(res, id)
 		}
