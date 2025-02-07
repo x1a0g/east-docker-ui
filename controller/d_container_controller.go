@@ -136,7 +136,7 @@ func ContainerCreate(ctx *gin.Context) {
 		configOpts.Env = envs
 	}
 
-	if len(req.Container.DockerConfig.Cmd) > 0 {
+	if len(req.Container.DockerConfig.Cmd) > 1 {
 		configOpts.Cmd = req.Container.DockerConfig.Cmd
 	}
 
@@ -168,10 +168,10 @@ func ContainerCreate(ctx *gin.Context) {
 			hostConfig.Memory = req.SetMem()
 		}
 		if req.Container.Host.CPUPercent != nil {
-			hostConfig.Memory = req.SetCpu()
+			hostConfig.CPUPercent = req.SetCpu()
 		}
 		if req.Container.Host.DisableSwap != nil {
-			hostConfig.MemorySwap = map[bool]int64{true: 200 * 1024 * 1024, false: -1}[*req.Container.Host.DisableSwap] //200mb交换内存
+			hostConfig.MemorySwap = map[bool]int64{true: -1, false: -1}[*req.Container.Host.DisableSwap] //200mb交换内存
 		}
 
 		if len(req.Container.Host.Volumes) > 0 {
@@ -196,7 +196,7 @@ func ContainerCreate(ctx *gin.Context) {
 			hostConfig.RestartPolicy = restartOpts
 		}
 	}
-	hostConfig.NetworkMode = networkName
+	//hostConfig.NetworkMode = networkName
 
 	containerOpts.HostConfig = &hostConfig
 

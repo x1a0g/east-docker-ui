@@ -83,7 +83,7 @@ func (c *CreateConRequest) ResolveEnvs() []string {
 	var res []string
 	envs := c.Container.DockerConfig.Environments
 
-	if envs != nil {
+	if envs != nil && len(envs) > 1 {
 		//map转切片
 		for key, value := range envs {
 			res = append(res, key+"="+value)
@@ -112,6 +112,7 @@ func (c *CreateConRequest) ResolvePort() map[docker.Port][]docker.PortBinding {
 	var ports = c.Container.Host.PortMapping
 
 	if ports != nil {
+		res = make(map[docker.Port][]docker.PortBinding)
 		for _, port := range ports {
 			res[docker.Port(port.ContainerPort)] = func() []docker.PortBinding {
 				var re []docker.PortBinding

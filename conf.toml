@@ -1,0 +1,7 @@
+[remote]
+host = "localhost"
+port = 5432
+tls = true
+cert = ""
+key = ""
+ca = ""
