@@ -31,9 +31,15 @@ func Route() *gin.Engine {
 	service.ConService(r)
 	service.RepoService(r)
 
-	r.LoadHTMLGlob("ui/*")
-	r.GET("/sse", func(ctx *gin.Context) {
-		ctx.HTML(200, "b.html", gin.H{})
+	r.LoadHTMLGlob("ui/*.html")
+	r.Static("/assets", "ui/assets")
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(200, "index.html", gin.H{})
 	})
+
+	r.NoRoute(func(ctx *gin.Context) {
+		ctx.HTML(200, "index.html", gin.H{})
+	})
+
 	return r
 }

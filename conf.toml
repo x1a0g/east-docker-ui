@@ -1,7 +1,6 @@
-[remote]
-host = "localhost"
-port = 5432
-tls = true
-cert = ""
-key = ""
-ca = ""
+[System]
+type = "remote"
+port = 9999
+[Remote]
+host = "192.168.70.129"
+port = 2375

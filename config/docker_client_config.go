@@ -1,8 +1,11 @@
 package config
 
 import (
+	API "east-docker-ui/common"
+	"github.com/BurntSushi/toml"
 	docker "github.com/fsouza/go-dockerclient"
 	"go.uber.org/zap"
+	"strconv"
 )
 
 type DockerClientConfig struct {
@@ -15,23 +18,34 @@ type DockerClientConfig struct {
 }
 
 var DockerClientConfigInstance *DockerClientConfig
+var Tp bool
 
 func init() {
-	DockerClientConfigInstance = &DockerClientConfig{
-		Host: "192.168.70.129",
-		Port: "2375",
-		Tls:  true,
-		Cert: "",
-		Key:  "",
-		CA:   "",
+	var config API.Config
+
+	_, err := toml.DecodeFile("./conf.toml", &config)
+	if err != nil {
+		panic(err)
 	}
+	Tp = config.System.Type == "remote"
+	if config.System.Type == "remote" {
+		DockerClientConfigInstance = &DockerClientConfig{
+			Host: config.Remote.Host,
+			Port: strconv.Itoa(config.Remote.Port),
+			Tls:  true,
+			Cert: "",
+			Key:  "",
+			CA:   "",
+		}
+	}
+
 }
 
 func (d *DockerClientConfig) GetHost() string {
-	if d.Tls {
+	if Tp {
 		return "tcp://" + d.Host + ":" + d.Port
 	}
-	return "unix://" + d.Host
+	return "unix:///var/run/docker.sock"
 }
 
 func (d *DockerClientConfig) GetRemoteClient() *docker.Client {
