@@ -37,6 +37,8 @@ func init() {
 			Key:  "",
 			CA:   "",
 		}
+	} else {
+		DockerClientConfigInstance = &DockerClientConfig{}
 	}
 
 }
